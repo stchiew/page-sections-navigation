@@ -39,7 +39,7 @@ export default class PageSectionsNavigation extends React.Component<IPageSection
     this.state = {
       isMounted: false
     };
-    console.log('Component Render');
+
     this._layerElement = this._getLayerElement();
   }
 
@@ -51,24 +51,21 @@ export default class PageSectionsNavigation extends React.Component<IPageSection
   public componentWillUpdate(nextProps: IPageSectionsNavigationProps) {
     if (nextProps.position !== this.props.position) {
       // updating layer based on position
-      console.log('Inside componentWillUpdate - 1');
       this._removeLayerElement();
       this._layerElement = this._getLayerElement(nextProps.position);
     }
     else if (!this._layerElement) {
       // creating layer if not exist
-      console.log('Inside componentWillUpdate - 2');
       this._layerElement = this._getLayerElement();
     }
   }
 
   public componentDidMount() {
-    console.log('Inside componentDidMount');
+
     //this._layerElement = this._getLayerElement();
     this.setState({
       isMounted: true
     });
-    this._GoToBottom();
   }
 
   public componentWillUnmount() {
@@ -149,23 +146,12 @@ export default class PageSectionsNavigation extends React.Component<IPageSection
     }
   }
 
-  private _GoToBottom() {
-    if (!this._scrollableParent) {
-      this._initScrollParent();
-    }
-    this._scrollableParent.scroll({
-      top: document.body.scrollHeight * 10,
-      behavior: "auto"
-    });
-  }
-
   /**
    * creates layer element to host the navigation outside of normal DOM hierarchy
    * @param position - current position value
    */
   private _getLayerElement(position?: NavPosition): HTMLElement | undefined {
     const host = this._getHost(position);
-    console.log('Inside _getLayerElement');
     if (host !== this._host) {
       this._removeLayerElement();
     }
