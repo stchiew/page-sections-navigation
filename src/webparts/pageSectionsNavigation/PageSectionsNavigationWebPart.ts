@@ -16,6 +16,7 @@ import { IPageSectionsNavigationProps } from './components/IPageSectionsNavigati
 import { IDynamicDataSource, IDynamicDataCallables, IDynamicDataPropertyDefinition } from '@microsoft/sp-dynamic-data';
 import { IAnchorItem } from '../../common/model';
 import { NavPosition, NavAlign, NavTheme } from '../../common/types';
+import { SPService } from '../../common/SPServices';
 
 export interface IPageSectionsNavigationWebPartProps {
   scrollBehavior: ScrollBehavior;
@@ -30,9 +31,12 @@ export interface IPageSectionsNavigationWebPartProps {
 
 export default class PageSectionsNavigationWebPart extends BaseClientSideWebPart<IPageSectionsNavigationWebPartProps> {
   // "Anchor" data sources
+  private anchorLinks: IAnchorItem[] = [];
+
+  // still need this connection for the section property
   private _dataSources: IDynamicDataSource[] = [];
 
-  protected onInit(): Promise<void> {
+  protected async onInit(): Promise<void> {
     const { customCssUrl } = this.properties;
 
     this._onAnchorChanged = this._onAnchorChanged.bind(this);
@@ -47,12 +51,15 @@ export default class PageSectionsNavigationWebPart extends BaseClientSideWebPart
     // registering current web part as a data source
     this.context.dynamicDataSourceManager.initializeSource(this);
 
-    return super.onInit();
+    // get all the anchor links
+    const _ = await super.onInit();
+    this.anchorLinks = await SPService.GetAnchorLinks(this.context);
+    //return super.onInit();
   }
 
   public render(): void {
-    console.log('Main Render');
-    const anchors = this._dataSources && this._dataSources.map(ds => ds.getPropertyValue('anchor') as IAnchorItem);
+
+    //const anchors1 = this._dataSources && this._dataSources.map(ds => ds.getPropertyValue('anchor') as IAnchorItem);
     const {
       scrollBehavior,
       position,
@@ -65,7 +72,7 @@ export default class PageSectionsNavigationWebPart extends BaseClientSideWebPart
     const element: React.ReactElement<IPageSectionsNavigationProps> = React.createElement(
       PageSectionsNavigation,
       {
-        anchors: anchors,
+        anchors: this.anchorLinks,
         scrollBehavior: scrollBehavior,
         position: position,
         theme: theme ? theme : (isDark ? 'dark' : 'light'),
@@ -159,7 +166,7 @@ export default class PageSectionsNavigationWebPart extends BaseClientSideWebPart
       pages: [
         {
           header: {
-            description: 'v1.0.6'
+            description: 'v2.0.0'
           },
           groups: [
             {

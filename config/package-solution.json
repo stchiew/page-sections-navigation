@@ -3,7 +3,7 @@
   "solution": {
     "name": "Page Sections Navigation Solution",
     "id": "a039e744-84ec-4188-bd49-535faa5e858b",
-    "version": "1.0.8.0",
+    "version": "2.0.0.0",
     "includeClientSideAssets": true,
     "isDomainIsolated": false
   },
